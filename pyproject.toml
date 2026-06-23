@@ -1,0 +1,11 @@
+[project]
+name = "fastapi-beginner-lab"
+version = "0.1.0"
+description = "Example project for a FastAPI beginner tutorial series."
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]>=0.115.0",
+]
+
+[tool.fastapi]
+entrypoint = "app.main:app"
