@@ -2,7 +2,7 @@
 
 这个项目配合 FastAPI 新手入门系列文章使用。
 
-第 1 篇只保留一个最小 FastAPI 应用：
+当前代码配合第 2 篇使用，包含一个最小 FastAPI 应用和一个接收 URL 参数的接口：
 
 ```text
 app/
@@ -25,4 +25,10 @@ fastapi dev app/main.py
 
 ```text
 http://127.0.0.1:8000/docs
+```
+
+可以试试：
+
+```text
+http://127.0.0.1:8000/items/3?q=book&short=true
 ```
