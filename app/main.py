@@ -1,4 +1,11 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class ItemCreate(BaseModel):
+    name: str
+    price: float
+    is_offer: bool = False
 
 app = FastAPI()
 
@@ -21,3 +28,8 @@ def read_item(item_id: int, q: str | None = None, short: bool = False):
     if not short:
         item["description"] = "This is a sample item used in the FastAPI beginner series."
     return item
+
+
+@app.post("/items")
+def create_item(item: ItemCreate):
+    return item.model_dump()
