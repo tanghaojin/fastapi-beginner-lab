@@ -7,6 +7,13 @@ class ItemCreate(BaseModel):
     price: float
     is_offer: bool = False
 
+
+class ItemPublic(BaseModel):
+    id: int
+    name: str
+    price: float
+    is_offer: bool = False
+
 app = FastAPI()
 
 
@@ -30,6 +37,11 @@ def read_item(item_id: int, q: str | None = None, short: bool = False):
     return item
 
 
-@app.post("/items")
+@app.post("/items", response_model=ItemPublic)
 def create_item(item: ItemCreate):
-    return item.model_dump()
+    item_data = item.model_dump()
+    return {
+        "id": 1,
+        **item_data,
+        "internal_note": "Only visible inside the server.",
+    }

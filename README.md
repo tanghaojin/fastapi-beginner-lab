@@ -2,7 +2,7 @@
 
 这个项目配合 FastAPI 新手入门系列文章使用。
 
-当前代码配合第 3 篇使用，包含一个最小 FastAPI 应用、一个接收 URL 参数的接口，以及一个接收 JSON 请求体的接口：
+当前代码配合第 4 篇使用，包含一个最小 FastAPI 应用、一个接收 URL 参数的接口，以及一个带响应模型的创建接口：
 
 ```text
 app/
@@ -42,3 +42,5 @@ http://127.0.0.1:8000/items/3?q=book&short=true
   "is_offer": true
 }
 ```
+
+响应里会出现 `id`，但不会出现服务端内部字段 `internal_note`。
