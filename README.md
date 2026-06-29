@@ -2,11 +2,13 @@
 
 这个项目配合 FastAPI 新手入门系列文章使用。
 
-当前代码配合第 5 篇使用，包含一个最小 FastAPI 应用、内存数据表、带响应模型的创建接口，以及用 HTTPException 处理资源不存在的查询接口：
+当前代码配合第 6 篇使用，包含依赖注入示例：用 `Depends` 复用公共校验逻辑，以及一个统一的查询参数依赖：
 
 ```text
 app/
+  __init__.py
   main.py
+  dependencies.py
 ```
 
 运行方式：
@@ -30,20 +32,11 @@ http://127.0.0.1:8000/docs
 可以试试：
 
 ```text
-http://127.0.0.1:8000/items/1       # 存在的商品，返回 200
-http://127.0.0.1:8000/items/999     # 不存在的商品，返回 404
-http://127.0.0.1:8000/users/1       # 存在的用户，返回 200
-http://127.0.0.1:8000/users/999     # 不存在的用户，返回 404
+GET /items              # 列表接口，需要 x-token 请求头，支持 q 和 limit 查询参数
+GET /items/1           # 存在的商品，返回 200
+GET /items/999         # 不存在的商品，返回 404
+GET /users/1           # 存在的用户，返回 200
+POST /items             # 创建商品，请求体需要 name、price、is_offer
 ```
 
-也可以在 `/docs` 里调用 `POST /items`，请求体示例：
-
-```json
-{
-  "name": "Notebook",
-  "price": 12.5,
-  "is_offer": true
-}
-```
-
-响应里会出现 `id`，但不会出现服务端内部字段 `internal_note`。
+在 `/docs` 里调用接口时，需要在 `x-token` 请求头里填入 `secret-token`，否则会返回 401。
