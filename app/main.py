@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 
+from .config import get_settings
 from .routers import health, items, users
+
+settings = get_settings()
 
 openapi_tags = [
     {
@@ -17,7 +20,7 @@ openapi_tags = [
     },
 ]
 
-app = FastAPI(title="FastAPI Beginner Lab", openapi_tags=openapi_tags)
+app = FastAPI(title=settings.app_name, openapi_tags=openapi_tags)
 
 app.include_router(items.router)
 app.include_router(users.router)

@@ -2,12 +2,13 @@
 
 这个项目配合 FastAPI 新手入门系列文章使用。
 
-当前代码配合第 8 篇使用，项目已加入 `/docs` 分组和接口说明：
+当前代码配合第 9 篇使用，项目已加入 `/docs` 分组、接口说明和环境配置：
 
 ```text
 app/
   __init__.py
   main.py           # 只负责组装路由
+  config.py         # 项目配置
   dependencies.py   # 公共依赖（token 校验、查询参数）
   schemas.py        # 请求/响应模型
   routers/
@@ -23,6 +24,7 @@ app/
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -e .
+Copy-Item .env.example .env
 
 $env:PYTHONIOENCODING = "utf-8"
 $env:PYTHONUTF8 = "1"
@@ -47,3 +49,11 @@ POST /items             # 创建商品
 ```
 
 在 `/docs` 里调用接口时，需要在 `x-token` 请求头里填入 `secret-token`，否则会返回 401。
+
+如果想修改应用名称或环境，可以编辑 `.env`：
+
+```text
+APP_NAME=FastAPI Beginner Lab
+APP_ENV=dev
+DATABASE_URL=sqlite:///./fastapi_beginner_lab.db
+```
