@@ -1,14 +1,37 @@
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, HTTPException, Depends
 
-from ..schemas import ItemCreate, ItemPublic
+from ..schemas import ItemCreate, ItemInDB, ItemPublic
 from ..dependencies import get_token_header, get_common_query
 
 router = APIRouter(prefix="/items", tags=["items"])
 
 fake_items_db = {
-    1: {"name": "Hammer", "price": 9.99, "is_offer": False},
-    2: {"name": "Screwdriver", "price": 5.50, "is_offer": True},
-    3: {"name": "Wrench", "price": 15.0, "is_offer": False},
+    1: ItemInDB(
+        id=1,
+        name="Hammer",
+        price=9.99,
+        is_offer=False,
+        cost_price=4.0,
+        created_at=datetime(2026, 1, 1, tzinfo=timezone.utc),
+    ),
+    2: ItemInDB(
+        id=2,
+        name="Screwdriver",
+        price=5.50,
+        is_offer=True,
+        cost_price=2.0,
+        created_at=datetime(2026, 1, 2, tzinfo=timezone.utc),
+    ),
+    3: ItemInDB(
+        id=3,
+        name="Wrench",
+        price=15.0,
+        is_offer=False,
+        cost_price=7.0,
+        created_at=datetime(2026, 1, 3, tzinfo=timezone.utc),
+    ),
 }
 
 
@@ -22,9 +45,9 @@ def list_items(queries: dict = Depends(get_common_query), token: str = Depends(g
     q = queries["q"]
     limit = queries["limit"]
     result = []
-    for item_id, item in fake_items_db.items():
-        if q is None or q.lower() in item["name"].lower():
-            result.append({"id": item_id, **item})
+    for item in fake_items_db.values():
+        if q is None or q.lower() in item.name.lower():
+            result.append(item)
     return result[:limit]
 
 
@@ -37,8 +60,7 @@ def list_items(queries: dict = Depends(get_common_query), token: str = Depends(g
 def read_item(item_id: int, token: str = Depends(get_token_header)):
     if item_id not in fake_items_db:
         raise HTTPException(status_code=404, detail="Item not found")
-    item = fake_items_db[item_id]
-    return {"id": item_id, **item}
+    return fake_items_db[item_id]
 
 
 @router.post(
@@ -48,9 +70,11 @@ def read_item(item_id: int, token: str = Depends(get_token_header)):
     description="接收创建商品需要的字段，服务端会补上 ID 和内部字段。",
 )
 def create_item(item: ItemCreate, token: str = Depends(get_token_header)):
-    item_data = item.model_dump()
-    return {
-        "id": 1,
-        **item_data,
-        "internal_note": "Only visible inside the server.",
-    }
+    new_item = ItemInDB(
+        id=max(fake_items_db) + 1,
+        **item.model_dump(),
+        cost_price=item.price * 0.6,
+        created_at=datetime.now(timezone.utc),
+    )
+    fake_items_db[new_item.id] = new_item
+    return new_item
