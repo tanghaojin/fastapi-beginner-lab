@@ -2,7 +2,7 @@
 
 这个项目配合 FastAPI 新手入门系列文章使用。
 
-当前代码配合第 7 篇使用，项目已从单文件拆分为多文件结构，用 APIRouter 组织接口：
+当前代码配合第 8 篇使用，项目已加入 `/docs` 分组和接口说明：
 
 ```text
 app/
@@ -14,6 +14,7 @@ app/
     __init__.py
     items.py         # items 相关接口
     users.py         # users 相关接口
+    health.py        # 系统状态接口
 ```
 
 运行方式：
@@ -41,6 +42,7 @@ GET /items              # 列表接口，需要 x-token，支持 q 和 limit
 GET /items/1            # 存在的商品，返回 200
 GET /items/999          # 不存在的商品，返回 404
 GET /users/1            # 存在的用户，返回 200
+GET /health             # 查看服务状态
 POST /items             # 创建商品
 ```
 
