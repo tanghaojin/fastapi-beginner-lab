@@ -2,7 +2,7 @@
 
 这个项目配合 FastAPI 新手入门系列文章使用。
 
-当前代码配合第 11 篇使用，项目已经接入 SQLite 数据库：
+当前代码配合第 12 篇使用，项目已加入 pytest 测试：
 
 ```text
 app/
@@ -19,6 +19,11 @@ app/
     items.py         # items 相关接口（已接入数据库）
     users.py         # users 相关接口
     health.py        # 系统状态接口
+tests/
+  __init__.py
+  conftest.py       # 测试夹具、测试数据库配置
+  test_health.py    # 健康检查相关测试
+  test_items.py     # 商品接口测试
 ```
 
 运行方式：
@@ -32,6 +37,12 @@ Copy-Item .env.example .env
 $env:PYTHONIOENCODING = "utf-8"
 $env:PYTHONUTF8 = "1"
 fastapi dev app/main.py
+```
+
+运行测试：
+
+```powershell
+pytest
 ```
 
 启动后打开：
