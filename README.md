@@ -2,18 +2,21 @@
 
 这个项目配合 FastAPI 新手入门系列文章使用。
 
-当前代码配合第 10 篇使用，项目已经加入文档分组、环境配置和模型边界示例：
+当前代码配合第 11 篇使用，项目已经接入 SQLite 数据库：
 
 ```text
 app/
   __init__.py
-  main.py           # 只负责组装路由
-  config.py         # 项目配置
+  main.py           # 启动时自动建表，组装路由
+  config.py         # 项目配置（含 DATABASE_URL）
+  database.py       # 数据库连接、会话管理
+  models.py         # SQLAlchemy 数据库模型
+  crud.py           # 数据库操作（增删改查）
+  schemas.py        # Pydantic 请求/响应模型
   dependencies.py   # 公共依赖（token 校验、查询参数）
-  schemas.py        # 请求/响应模型
   routers/
     __init__.py
-    items.py         # items 相关接口
+    items.py         # items 相关接口（已接入数据库）
     users.py         # users 相关接口
     health.py        # 系统状态接口
 ```

@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 
+from . import models
 from .config import get_settings
+from .database import engine
 from .routers import health, items, users
+
+models.Base.metadata.create_all(bind=engine)
 
 settings = get_settings()
 

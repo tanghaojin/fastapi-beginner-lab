@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ItemBase(BaseModel):
@@ -15,9 +15,12 @@ class ItemCreate(ItemBase):
 
 class ItemPublic(ItemBase):
     id: int
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ItemInDB(ItemBase):
     id: int
     cost_price: float
     created_at: datetime
+    created_by: str
+    model_config = ConfigDict(from_attributes=True)
