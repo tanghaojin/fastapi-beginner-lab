@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 
-from . import models
+from . import crud, models
+from .auth import hash_password
 from .config import get_settings
-from .database import engine
+from .database import engine, SessionLocal
 from .routers import health, items, users
 
 models.Base.metadata.create_all(bind=engine)
@@ -16,7 +17,7 @@ openapi_tags = [
     },
     {
         "name": "users",
-        "description": "用户相关接口，目前只保留最小查询示例。",
+        "description": "用户相关接口，包含登录和查询。",
     },
     {
         "name": "system",
@@ -39,3 +40,14 @@ def read_root():
 @app.get("/ping", tags=["system"], summary="测试服务连通性")
 def ping():
     return {"message": "pong"}
+
+
+def seed_test_user():
+    db = SessionLocal()
+    user = crud.get_user_by_username(db, "test")
+    if user is None:
+        crud.create_user(db, "test", hash_password("test123"))
+    db.close()
+
+
+seed_test_user()

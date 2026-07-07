@@ -1,4 +1,4 @@
-def test_create_item(client):
+def test_create_item(client, auth_headers):
     response = client.post(
         "/items",
         json={
@@ -6,7 +6,7 @@ def test_create_item(client):
             "price": 9.99,
             "is_offer": False,
         },
-        headers={"x-token": "secret-token"},
+        headers=auth_headers,
     )
     assert response.status_code == 200
     data = response.json()
@@ -18,22 +18,22 @@ def test_create_item(client):
     assert "created_by" not in data
 
 
-def test_list_items(client):
+def test_list_items(client, auth_headers):
     """先创建一条数据，再确认列表能查到它。"""
     client.post(
         "/items",
         json={"name": "Test Item", "price": 5.0},
-        headers={"x-token": "secret-token"},
+        headers=auth_headers,
     )
-    response = client.get("/items", headers={"x-token": "secret-token"})
+    response = client.get("/items", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
     assert isinstance(data, list)
     assert len(data) >= 1
 
 
-def test_read_item_not_found(client):
-    response = client.get("/items/99999", headers={"x-token": "secret-token"})
+def test_read_item_not_found(client, auth_headers):
+    response = client.get("/items/99999", headers=auth_headers)
     assert response.status_code == 404
     assert response.json()["detail"] == "Item not found"
 
@@ -43,10 +43,29 @@ def test_missing_token_returns_401(client):
     assert response.status_code == 401
 
 
-def test_create_item_missing_name(client):
+def test_create_item_missing_name(client, auth_headers):
     response = client.post(
         "/items",
         json={"price": 9.99},
-        headers={"x-token": "secret-token"},
+        headers=auth_headers,
     )
     assert response.status_code == 422
+
+
+def test_login_success(client):
+    response = client.post(
+        "/users/token",
+        data={"username": "test", "password": "test123"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "access_token" in data
+    assert data["token_type"] == "bearer"
+
+
+def test_login_wrong_password(client):
+    response = client.post(
+        "/users/token",
+        data={"username": "test", "password": "wrong"},
+    )
+    assert response.status_code == 401

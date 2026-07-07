@@ -2,8 +2,9 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 
 from .. import crud, schemas
+from ..auth import get_current_user
 from ..database import get_db
-from ..dependencies import get_token_header, get_common_query
+from ..dependencies import get_common_query
 
 router = APIRouter(prefix="/items", tags=["items"])
 
@@ -16,8 +17,8 @@ router = APIRouter(prefix="/items", tags=["items"])
 )
 def list_items(
     queries: dict = Depends(get_common_query),
-    token: str = Depends(get_token_header),
     db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     q = queries["q"]
     limit = queries["limit"]
@@ -32,8 +33,8 @@ def list_items(
 )
 def read_item(
     item_id: int,
-    token: str = Depends(get_token_header),
     db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     item = crud.get_item(db, item_id)
     if item is None:
@@ -49,7 +50,7 @@ def read_item(
 )
 def create_item(
     item: schemas.ItemCreate,
-    token: str = Depends(get_token_header),
     db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     return crud.create_item(db, item)

@@ -2,22 +2,23 @@
 
 这个项目配合 FastAPI 新手入门系列文章使用。
 
-当前代码配合第 12 篇使用，项目已加入 pytest 测试：
+当前代码配合第 13 篇使用，项目已加入 OAuth2 + JWT 认证：
 
 ```text
 app/
   __init__.py
-  main.py           # 启动时自动建表，组装路由
-  config.py         # 项目配置（含 DATABASE_URL）
+  main.py           # 启动时建表、播种测试用户、组装路由
+  config.py         # 项目配置（含 DATABASE_URL、SECRET_KEY）
   database.py       # 数据库连接、会话管理
-  models.py         # SQLAlchemy 数据库模型
-  crud.py           # 数据库操作（增删改查）
+  models.py         # SQLAlchemy 数据库模型（Item、User）
+  crud.py           # 数据库操作（items、users）
   schemas.py        # Pydantic 请求/响应模型
-  dependencies.py   # 公共依赖（token 校验、查询参数）
+  auth.py           # 认证逻辑（密码哈希、JWT、当前用户）
+  dependencies.py   # 公共查询参数依赖
   routers/
     __init__.py
-    items.py         # items 相关接口（已接入数据库）
-    users.py         # users 相关接口
+    items.py         # items 接口（需 Bearer token）
+    users.py         # 登录和用户查询接口
     health.py        # 系统状态接口
 tests/
   __init__.py
@@ -54,15 +55,18 @@ http://127.0.0.1:8000/docs
 可以试试：
 
 ```text
-GET /items              # 列表接口，需要 x-token，支持 q 和 limit
-GET /items/1            # 存在的商品，返回 200
-GET /items/999          # 不存在的商品，返回 404
-GET /users/1            # 存在的用户，返回 200
-GET /health             # 查看服务状态
+POST /users/token       # 用 test / test123 登录，获取 token
+GET  /items             # 列表接口，支持 q 和 limit
+GET  /items/1           # 存在的商品，返回 200
+GET  /items/999         # 不存在的商品，返回 404
 POST /items             # 创建商品
+GET  /users/1           # 查看用户信息
+GET  /health            # 查看服务状态
 ```
 
-在 `/docs` 里调用接口时，需要在 `x-token` 请求头里填入 `secret-token`，否则会返回 401。
+在 `/docs` 里访问受保护接口前，先点右上角 **Authorize**，填入 `POST /users/token` 返回的 access_token。
+
+测试账号：用户名 `test`，密码 `test123`。
 
 如果想修改应用名称或环境，可以编辑 `.env`：
 
