@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from . import crud, models
 from .auth import hash_password
@@ -26,6 +27,14 @@ openapi_tags = [
 ]
 
 app = FastAPI(title=settings.app_name, openapi_tags=openapi_tags)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Authorization", "Content-Type"],
+)
 
 app.include_router(items.router)
 app.include_router(users.router)
