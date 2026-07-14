@@ -2,7 +2,7 @@
 
 这个项目配合 FastAPI 新手入门系列文章使用。
 
-当前代码配合第 16 篇使用，项目已加入 OAuth2 + JWT 认证、本地 CORS 配置、文件上传和后台任务：
+当前代码配合第 17 篇使用，项目已加入 OAuth2 + JWT 认证、本地 CORS 配置、文件上传、后台任务和 Docker 运行配置：
 
 ```text
 app/
@@ -28,6 +28,8 @@ tests/
   conftest.py       # 测试夹具、测试数据库配置
   test_health.py    # 健康检查相关测试
   test_items.py     # 商品接口测试
+Dockerfile          # 构建 FastAPI 镜像
+.dockerignore       # 排除不应进入镜像构建上下文的文件
 ```
 
 运行方式：
@@ -82,3 +84,12 @@ APP_NAME=FastAPI Beginner Lab
 APP_ENV=dev
 DATABASE_URL=sqlite:///./fastapi_beginner_lab.db
 ```
+
+使用 Docker 构建并运行：
+
+```powershell
+docker build -t fastapi-beginner-lab .
+docker run --rm -p 8000:8000 fastapi-beginner-lab
+```
+
+容器启动后访问 `http://127.0.0.1:8000/docs`。
