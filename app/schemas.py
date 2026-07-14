@@ -29,3 +29,7 @@ class ItemInDB(ItemBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class NotificationCreate(BaseModel):
+    message: str

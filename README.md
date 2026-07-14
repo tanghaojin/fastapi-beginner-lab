@@ -2,7 +2,7 @@
 
 这个项目配合 FastAPI 新手入门系列文章使用。
 
-当前代码配合第 15 篇使用，项目已加入 OAuth2 + JWT 认证、本地 CORS 配置和文件上传：
+当前代码配合第 16 篇使用，项目已加入 OAuth2 + JWT 认证、本地 CORS 配置、文件上传和后台任务：
 
 ```text
 app/
@@ -14,6 +14,7 @@ app/
   crud.py           # 数据库操作（items、users）
   schemas.py        # Pydantic 请求/响应模型
   auth.py           # 认证逻辑（密码哈希、JWT、当前用户）
+  background.py     # 后台任务函数
   dependencies.py   # 公共查询参数依赖
   routers/
     __init__.py
@@ -21,6 +22,7 @@ app/
     users.py         # 登录和用户查询接口
     health.py        # 系统状态接口
     uploads.py       # 文件上传接口（需 Bearer token）
+    tasks.py         # 后台任务接口（需 Bearer token）
 tests/
   __init__.py
   conftest.py       # 测试夹具、测试数据库配置
@@ -62,6 +64,7 @@ GET  /items/1           # 存在的商品，返回 200
 GET  /items/999         # 不存在的商品，返回 404
 POST /items             # 创建商品
 POST /uploads           # 上传单个文件，返回文件名和 MIME 类型
+POST /tasks/notifications # 提交通知后台任务
 GET  /users/1           # 查看用户信息
 GET  /health            # 查看服务状态
 ```

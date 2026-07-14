@@ -5,7 +5,7 @@ from . import crud, models
 from .auth import hash_password
 from .config import get_settings
 from .database import engine, SessionLocal
-from .routers import health, items, uploads, users
+from .routers import health, items, tasks, uploads, users
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -24,6 +24,10 @@ openapi_tags = [
         "name": "system",
         "description": "系统状态接口，用来检查服务是否正常。",
     },
+    {
+        "name": "tasks",
+        "description": "后台任务接口，用来提交响应返回后的工作。",
+    },
 ]
 
 app = FastAPI(title=settings.app_name, openapi_tags=openapi_tags)
@@ -40,6 +44,7 @@ app.include_router(items.router)
 app.include_router(users.router)
 app.include_router(health.router)
 app.include_router(uploads.router)
+app.include_router(tasks.router)
 
 
 @app.get("/", tags=["system"], summary="首页")
