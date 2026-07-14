@@ -5,7 +5,7 @@ from . import crud, models
 from .auth import hash_password
 from .config import get_settings
 from .database import engine, SessionLocal
-from .routers import health, items, users
+from .routers import health, items, uploads, users
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -39,6 +39,7 @@ app.add_middleware(
 app.include_router(items.router)
 app.include_router(users.router)
 app.include_router(health.router)
+app.include_router(uploads.router)
 
 
 @app.get("/", tags=["system"], summary="首页")
